@@ -43,7 +43,7 @@ function UploadProductPage() {
 				<FileUpload />
 				<br />
 				<br />
-				<labe>이름</labe>
+				<label>이름</label>
 				<Input onChange={titleChangeHandler} value={ProductTitle} />
 				<br />
 				<br />

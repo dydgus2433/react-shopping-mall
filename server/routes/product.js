@@ -1,15 +1,38 @@
 const express = require("express")
 const router = express.Router()
-const { Product } = require("../models/Product")
+
+const multer = require("multer")
+// const { Product } = require("../models/Product")
 
 //=================================
 //             Product
 //=================================
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, "uploads/")
+	},
+	filename: function (req, file, cb) {
+		console.log("file", file)
+		cb(null, `${Date.now()}_${file.originalname}`)
+	},
+})
 
-router.post("image", (req, res) => {
+const upload = multer({ storage: storage }).single("file")
 
-    //가져온 이미지를 저장을 해주면 된다.
-    
+router.post("/image", (req, res) => {
+	//가져온 이미지를 저장을 해주면 된다.
+
+	upload(req, res, (err) => {
+		console.log(res.req.file)
+		if (err) {
+			return res.json({ success: false, err })
+		}
+		return res.json({
+			success: true,
+			filePath: res.req.file.path,
+			fileName: res.req.file.filename,
+		})
+	})
 })
 
 module.exports = router
