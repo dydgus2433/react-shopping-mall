@@ -19,7 +19,7 @@ function FileUpload(props) {
 				console.log(response.data)
 				if (response.data.success) {
 					setImages([...Images, response.data.filePath])
-					props.refreshFunction(Images)
+					props.refreshFunction([...Images, response.data.filePath])
 				} else {
 					alert("파일 저장에 실패했습니다.")
 				}

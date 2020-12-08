@@ -44,4 +44,14 @@ router.post("/", (req, res) => {
 	})
 })
 
+router.post("/products", (req, res) => {
+	// product collection에 들어있는 모든 상품정보를 가져오기
+	Product.find()
+		.populate("writer")
+		.exec((err, productsInfo) => {
+			if (err) return res.status(400).json({ success: false, err })
+			return res.status(200).json({ success: true, productsInfo })
+		})
+})
+
 module.exports = router
