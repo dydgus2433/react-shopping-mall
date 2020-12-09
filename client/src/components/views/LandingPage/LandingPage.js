@@ -1,33 +1,52 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { FaCode } from "react-icons/fa"
 import axios from "axios"
-import { Icon, Col, Card, Row } from "antd"
+import { Icon, Col, Card, Row, Carousel } from "antd"
 import Meta from "antd/lib/card/Meta"
+import ImageSlider from "../../utils/ImageSlider"
 function LandingPage() {
 	const [Products, setProducts] = useState([])
-	useEffect(() => {
-		axios.post("/api/product/products").then((response) => {
+	const [Skip, setSkip] = useState(0)
+	const [Limit, setLimit] = useState(4)
+	const [PostSize, setPostSize] = useState(0)
+
+	const getProducts = useCallback((body) => {
+		axios.post("/api/product/products", body).then((response) => {
 			if (response.data.success) {
-				console.log(response.data)
-				setProducts(response.data.productsInfo)
+				if (body.loadMore) {
+					setProducts([...Products, ...response.data.productsInfo])
+				} else {
+					setProducts(response.data.productsInfo)
+				}
+				setPostSize(response.data.postSize)
 			} else {
 				alert("상품들을 가져오는데 실패 했습니다.")
 			}
 		})
 	})
+	useEffect(() => {
+		let body = {
+			skip: Skip,
+			limit: Limit,
+			loadMore: false,
+		}
+		getProducts(body)
+	}, [Limit])
 
+	const loadMoreHander = () => {
+		let skip = Skip + Limit
+		let body = {
+			skip: skip,
+			limit: Limit,
+			loadMore: true,
+		}
+		getProducts(body)
+		setSkip(skip)
+	}
 	const renderCards = Products.map((product, index) => {
-		console.log(product)
 		return (
 			<Col lg={6} md={8} xs={24} key={index}>
-				<Card
-					cover={
-						<img
-							style={{ width: "100%", maxHeight: "150px" }}
-							src={`http://localhost:5000/${product.images[0]}`}
-						/>
-					}
-				>
+				<Card cover={<ImageSlider images={product.images} />}>
 					<Meta title={product.title} description={`${product.price}`} />
 				</Card>
 			</Col>
@@ -48,9 +67,12 @@ function LandingPage() {
 				{<Row gutter={(16, 16)}>{renderCards}</Row>}
 			</div>
 
-			<div style={{ display: "flex", justifyContent: "center" }}>
-				<button>더보기</button>
-			</div>
+			<br />
+			{PostSize >= Limit && (
+				<div style={{ display: "flex", justifyContent: "center" }}>
+					<button onClick={loadMoreHander}>더보기</button>
+				</div>
+			)}
 		</div>
 	)
 }
