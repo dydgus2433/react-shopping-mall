@@ -4,13 +4,19 @@ import axios from "axios"
 import { Icon, Col, Card, Row, Carousel } from "antd"
 import Meta from "antd/lib/card/Meta"
 import ImageSlider from "../../utils/ImageSlider"
+import Checkbox from "./Sections/CheckBox"
+import { continents } from "./Sections/Datas"
 function LandingPage() {
 	const [Products, setProducts] = useState([])
 	const [Skip, setSkip] = useState(0)
-	const [Limit, setLimit] = useState(4)
-	const [PostSize, setPostSize] = useState(0)
+	const [Limit] = useState(4)
+	const [PostSize, setPostSize] = useState(4)
+	const [Filters, setFilters] = useState({
+		continents: [],
+		price: [],
+	})
 
-	const getProducts = useCallback((body) => {
+	const getProducts = (body) => {
 		axios.post("/api/product/products", body).then((response) => {
 			if (response.data.success) {
 				if (body.loadMore) {
@@ -23,15 +29,28 @@ function LandingPage() {
 				alert("상품들을 가져오는데 실패 했습니다.")
 			}
 		})
-	})
+	}
 	useEffect(() => {
 		let body = {
 			skip: Skip,
 			limit: Limit,
 			loadMore: false,
 		}
-		getProducts(body)
-	}, [Limit])
+		const getProductsFunction = (body) => {
+			axios.post("/api/product/products", body).then((response) => {
+				if (response.data.success) {
+					if (!body.loadMore) {
+						setProducts(response.data.productsInfo)
+						setPostSize(response.data.postSize)
+					}
+				} else {
+					alert("상품들을 가져오는데 실패 했습니다.")
+				}
+			})
+		}
+
+		getProductsFunction(body)
+	}, [Limit, Skip])
 
 	const loadMoreHander = () => {
 		let skip = Skip + Limit
@@ -53,6 +72,23 @@ function LandingPage() {
 		)
 	})
 
+	const showFilteredResults = (filters) => {
+		let body = {
+			skip: 0,
+			limit: Limit,
+			filters: filters,
+		}
+		getProducts(body)
+		setSkip(0)
+	}
+	const handleFilters = (filters, category) => {
+		const newFilters = { ...Filters }
+
+		newFilters[category] = filters
+
+		showFilteredResults(newFilters)
+	}
+
 	return (
 		<div style={{ width: "75%", margin: "3rem auto" }}>
 			<div style={{ textAlign: "center" }}>
@@ -61,6 +97,12 @@ function LandingPage() {
 				</h2>
 
 				{/* Filter  */}
+				{/* Checkbox	 */}
+				<Checkbox
+					list={continents}
+					handleFilters={(filters) => handleFilters(filters, "continents")}
+				/>
+				{/* RadioBox */}
 				{/* Searcj */}
 				{/* Cards */}
 

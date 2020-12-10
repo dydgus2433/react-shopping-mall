@@ -72,7 +72,7 @@ function UploadProductPage(props) {
 				<Title lavel={2}>여행 상품 업로드</Title>
 			</div>
 
-			<Form onSumbit={submitHandler}>
+			<Form onSubmit={submitHandler}>
 				{/* DropZone */}
 				<FileUpload refreshFunction={updateImages} />
 				<br />
