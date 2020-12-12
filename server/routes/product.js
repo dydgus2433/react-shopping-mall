@@ -49,7 +49,7 @@ router.post("/products", (req, res) => {
 
 	let limit = req.body.limit ? parseInt(req.body.limit) : 20
 	let skip = req.body.skip ? parseInt(req.body.skip) : 0
-
+	let term = req.body.searchTerm
 	let findArgs = {}
 	for (let key in req.body.filters) {
 		if (req.body.filters[key].length > 0) {
@@ -65,17 +65,37 @@ router.post("/products", (req, res) => {
 			}
 		}
 	}
-	console.log("findArgs", findArgs)
-	Product.find(findArgs)
-		.populate("writer")
-		.skip(skip)
-		.limit(limit)
-		.exec((err, productsInfo) => {
-			if (err) return res.status(400).json({ success: false, err })
-			return res
-				.status(200)
-				.json({ success: true, productsInfo, postSize: productsInfo.length })
-		})
+
+	console.log("term", term)
+	if (term) {
+		Product.find(findArgs)
+			.find({
+				$text: {
+					$search: term,
+				},
+			})
+			.populate("writer")
+			.skip(skip)
+			.limit(limit)
+			.exec((err, productsInfo) => {
+				if (err) return res.status(400).json({ success: false, err })
+				return res
+					.status(200)
+					.json({ success: true, productsInfo, postSize: productsInfo.length })
+			})
+	} else {
+		console.log("findArgs", findArgs)
+		Product.find(findArgs)
+			.populate("writer")
+			.skip(skip)
+			.limit(limit)
+			.exec((err, productsInfo) => {
+				if (err) return res.status(400).json({ success: false, err })
+				return res
+					.status(200)
+					.json({ success: true, productsInfo, postSize: productsInfo.length })
+			})
+	}
 })
 
 module.exports = router

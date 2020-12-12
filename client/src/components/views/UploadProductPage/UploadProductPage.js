@@ -39,7 +39,7 @@ function UploadProductPage(props) {
 
 	const submitHandler = (event) => {
 		event.preventDefault()
-		if (!Title || !Description || !Price || !Continent || !Images) {
+		if (!ProductTitle || !Description || !Price || !Continent || !Images) {
 			return alert("모든 값을 넣어주셔야 합니다.")
 		}
 
@@ -48,7 +48,7 @@ function UploadProductPage(props) {
 		const body = {
 			// 로그인 된 사람의 ID
 			writer: props.user.userData._id,
-			title: Title,
+			title: ProductTitle,
 			description: Description,
 			price: Price,
 			continent: Continent,

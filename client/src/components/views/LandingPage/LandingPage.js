@@ -6,16 +6,19 @@ import Meta from "antd/lib/card/Meta"
 import ImageSlider from "../../utils/ImageSlider"
 import Checkbox from "./Sections/CheckBox"
 import Radiobox from "./Sections/RadioBox"
+import SearchFeature from "./Sections/SearchFeature"
 import { continents, price } from "./Sections/Datas"
+import Title from "antd/lib/skeleton/Title"
 function LandingPage() {
 	const [Products, setProducts] = useState([])
 	const [Skip, setSkip] = useState(0)
-	const [Limit] = useState(4)
+	const [Limit, setLimit] = useState(4)
 	const [PostSize, setPostSize] = useState(4)
 	const [Filters, setFilters] = useState({
 		continents: [],
 		price: [],
 	})
+	const [SearchTerm, setSearchTerm] = useState("")
 
 	const getProducts = (body) => {
 		axios.post("/api/product/products", body).then((response) => {
@@ -32,9 +35,11 @@ function LandingPage() {
 		})
 	}
 	useEffect(() => {
+		let skip = 0
+		let limit = 4
 		let body = {
-			skip: Skip,
-			limit: Limit,
+			skip: skip,
+			limit: limit,
 			loadMore: false,
 		}
 		const getProductsFunction = (body) => {
@@ -51,7 +56,7 @@ function LandingPage() {
 		}
 
 		getProductsFunction(body)
-	}, [Limit, Skip])
+	}, [])
 
 	const loadMoreHander = () => {
 		let skip = Skip + Limit
@@ -67,6 +72,7 @@ function LandingPage() {
 		return (
 			<Col lg={6} md={8} xs={24} key={index}>
 				<Card cover={<ImageSlider images={product.images} />}>
+					<Title>{product.title}</Title>
 					<Meta title={product.title} description={`${product.price}`} />
 				</Card>
 			</Col>
@@ -106,6 +112,19 @@ function LandingPage() {
 		}
 		return array
 	}
+
+	const updateSearchTerm = (newSearchTerm) => {
+		let body = {
+			skip: 0,
+			limit: Limit,
+			filters: Filters,
+			searchTerm: newSearchTerm,
+		}
+		setSearchTerm(newSearchTerm)
+
+		setSkip(0)
+		getProducts(body)
+	}
 	return (
 		<div style={{ width: "75%", margin: "3rem auto" }}>
 			<div style={{ textAlign: "center" }}>
@@ -131,7 +150,10 @@ function LandingPage() {
 					</Col>
 				</Row>
 
-				{/* Searcj */}
+				{/* Search */}
+				<div style={{ display: "flex", justifyContent: "flex-end", margin: "1rem auto" }}>
+					<SearchFeature refreshFunction={updateSearchTerm} />
+				</div>
 				{/* Cards */}
 
 				{<Row gutter={(16, 16)}>{renderCards}</Row>}
