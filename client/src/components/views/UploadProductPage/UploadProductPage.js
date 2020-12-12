@@ -6,9 +6,9 @@ const { Title } = Typography
 const { TextArea } = Input
 
 const Continents = [
-	{ key: 1, value: "Africa" },
+	{ key: 1, value: "Asia" },
 	{ key: 2, value: "Europe" },
-	{ key: 3, value: "Asia" },
+	{ key: 3, value: "Africa" },
 	{ key: 4, value: "North America" },
 	{ key: 5, value: "South America" },
 	{ key: 6, value: "Australia" },
