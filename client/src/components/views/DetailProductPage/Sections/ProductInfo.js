@@ -1,8 +1,14 @@
 import { Button, Descriptions } from "antd"
 import React from "react"
+import { useDispatch } from "react-redux"
+import { addToCart } from "../../../../_actions/user_actions"
 
 function ProductInfo(props) {
-	const clickHandler = () => {}
+	const dispatch = useDispatch()
+	const clickHandler = () => {
+		//필요한 정보를 Cart 필드에 넣어준다.
+		dispatch(addToCart(props.detail._id))
+	}
 	return (
 		<div>
 			<Descriptions title="Product Info">
