@@ -30,7 +30,7 @@ function App() {
 						path="/product/:productId"
 						component={Auth(DetailProductPage, null)}
 					/>
-					<Route exact path="/product/cart" component={Auth(CartPage, true)} />
+					<Route exact path="/user/cart" component={Auth(CartPage, true)} />
 				</Switch>
 			</div>
 			<Footer />

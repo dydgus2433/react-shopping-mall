@@ -1,5 +1,12 @@
 import axios from "axios"
-import { LOGIN_USER, REGISTER_USER, AUTH_USER, LOGOUT_USER, ADD_TO_CART } from "./types"
+import {
+	LOGIN_USER,
+	REGISTER_USER,
+	AUTH_USER,
+	LOGOUT_USER,
+	ADD_TO_CART,
+	GET_CART_ITEMS,
+} from "./types"
 import { USER_SERVER } from "../components/Config.js"
 
 export function registerUser(dataToSubmit) {
@@ -50,6 +57,38 @@ export function addToCart(id) {
 
 	return {
 		type: ADD_TO_CART,
+		payload: request,
+	}
+}
+export function getCartItems(cartItems, userCart) {
+	// Axios.get(`/api/product/products_by_id?id=${productId}&type=single`).then((response) => {
+	// 	if (response.data.success) {
+	// 		console.log("response.data", response.data)
+	// 		setProduct(response.data.product[0])
+	// 	} else {
+	// 		alert("상세 정보 가져오기를 실패했습니다.")
+	// 	}
+	// })
+	const request = axios
+		.get(`/api/product/products_by_id?id=${cartItems}&type=array`)
+		.then((response) => {
+			//CartItem 들에 해당하는 정보들을
+			//Product Collection에서 가져온후에
+			//Quantity 정보를 넣어준다
+			console.log(response.data)
+			userCart.forEach((cartItem) => {
+				response.data.product.forEach((productDetail, index) => {
+					if (cartItem.id === productDetail._id) {
+						response.data.product[index].quantity = cartItem.quantity
+					}
+				})
+			})
+
+			return response.data
+		})
+
+	return {
+		type: GET_CART_ITEMS,
 		payload: request,
 	}
 }

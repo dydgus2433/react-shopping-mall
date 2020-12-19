@@ -1,4 +1,11 @@
-import { LOGIN_USER, REGISTER_USER, AUTH_USER, LOGOUT_USER, ADD_TO_CART } from "../_actions/types"
+import {
+	LOGIN_USER,
+	REGISTER_USER,
+	AUTH_USER,
+	LOGOUT_USER,
+	ADD_TO_CART,
+	GET_CART_ITEMS,
+} from "../_actions/types"
 
 export default function (state = {}, action) {
 	switch (action.type) {
@@ -12,6 +19,8 @@ export default function (state = {}, action) {
 			return { ...state }
 		case ADD_TO_CART:
 			return { ...state, userData: action.payload }
+		case GET_CART_ITEMS:
+			return { ...state, cartDetail: action.payload }
 		default:
 			return state
 	}
