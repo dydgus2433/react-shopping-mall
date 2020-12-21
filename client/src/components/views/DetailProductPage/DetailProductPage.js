@@ -9,14 +9,12 @@ function DetailProductPage(props) {
 
 	const [Product, setProduct] = useState({})
 	useEffect(() => {
-		Axios.get(`/api/product/products_by_id?id=${productId}&type=single`).then((response) => {
-			if (response.data.success) {
+		Axios.get(`/api/product/products_by_id?id=${productId}&type=single`)
+			.then((response) => {
 				console.log("response.data", response.data)
-				setProduct(response.data.product[0])
-			} else {
-				alert("상세 정보 가져오기를 실패했습니다.")
-			}
-		})
+				setProduct(response.data[0])
+			})
+			.catch((err) => alert(err))
 	}, [productId])
 
 	return (
