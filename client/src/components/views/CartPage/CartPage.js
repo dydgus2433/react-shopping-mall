@@ -4,11 +4,13 @@ import { useDispatch } from "react-redux"
 import { getCartItems, removeCartItem, onSuccessBuy } from "../../../_actions/user_actions"
 import UserCardBlock from "./Sections/UserCardBlock"
 import Paypal from "../../utils/Paypal"
+import { Result, Button } from "antd"
 function CartPage(props) {
 	const dispatch = useDispatch()
 
 	const [Total, setTotal] = useState(0)
 	const [ShowTotal, setShowTotal] = useState(false)
+	const [ShowSuccess, setShowSuccess] = useState(false)
 	useEffect(() => {
 		let cartItems = []
 		//리덕스 User state안에 cart안에 상품이 들어있는지 확인
@@ -54,8 +56,10 @@ function CartPage(props) {
 				cartDetail: props.user.cartDetail,
 			})
 		).then((response) => {
+			console.log(response, "response.aaaaaa")
 			if (response.payload.success) {
 				setShowTotal(false)
+				setShowSuccess(true)
 			}
 		})
 	}
@@ -70,6 +74,8 @@ function CartPage(props) {
 				<div style={{ marginTop: "3rem" }}>
 					<h2>Total Amount : $ {Total}</h2>
 				</div>
+			) : ShowSuccess ? (
+				<Result status="success" title="Successfully Purchased Items" />
 			) : (
 				<>
 					<br />

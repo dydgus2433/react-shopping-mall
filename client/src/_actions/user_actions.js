@@ -118,13 +118,14 @@ export function removeCartItem(productId) {
 
 export function onSuccessBuy(data) {
 	//paymentData, cartDetail
-	const request = axios.post(`/api/users/successBuy`).then((response) => {
+	const request = axios.post(`/api/users/successBuy`, data).then((response) => {
 		//CartItem 들에 해당하는 정보들을
 		//Product Collection에서 가져온후에
 		//Quantity 정보를 넣어준다
-	
+		// return response.data
 		return response.data
 	})
+	console.log("action.payload", request)
 
 	return {
 		type: ON_SUCCESS_BUY,
